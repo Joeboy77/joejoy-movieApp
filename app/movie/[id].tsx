@@ -67,6 +67,9 @@ export default function MovieDetailsScreen() {
   };
   
   const playMovie = () => {
+    console.log('Play movie clicked for:', movie.Title);
+    console.log('TMDB ID:', movie.tmdbId);
+    console.log('IMDB ID:', movie.imdbID);
     setShowVideoPlayer(true);
   };
   

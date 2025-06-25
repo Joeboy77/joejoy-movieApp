@@ -32,25 +32,27 @@ export default function SectionScreen() {
     >
       <TouchableOpacity onPress={() => navigateToDetails(item.imdbID)}>
         <Surface style={[styles.cardSurface, { backgroundColor: theme.colors.surface }]}>
-          <Card style={styles.card} mode="elevated">
-            <Card.Cover
-              source={{
-                uri: item.Poster !== 'N/A'
-                  ? item.Poster
-                  : 'https://via.placeholder.com/300x450?text=No+Poster',
-              }}
-              style={styles.cardImage}
-            />
-            <LinearGradient
-              colors={['transparent', 'rgba(0,0,0,0.9)']}
-              style={styles.cardGradient}
-            >
-              <Text style={styles.cardTitle} numberOfLines={2}>
-                {item.Title}
-              </Text>
-              <Text style={styles.cardYear}>{item.Year}</Text>
-            </LinearGradient>
-          </Card>
+          <View style={styles.cardWrapper}>
+            <Card style={styles.card} mode="elevated">
+              <Card.Cover
+                source={{
+                  uri: item.Poster !== 'N/A'
+                    ? item.Poster
+                    : 'https://via.placeholder.com/300x450?text=No+Poster',
+                }}
+                style={styles.cardImage}
+              />
+              <LinearGradient
+                colors={['transparent', 'rgba(0,0,0,0.9)']}
+                style={styles.cardGradient}
+              >
+                <Text style={styles.cardTitle} numberOfLines={2}>
+                  {item.Title}
+                </Text>
+                <Text style={styles.cardYear}>{item.Year}</Text>
+              </LinearGradient>
+            </Card>
+          </View>
         </Surface>
       </TouchableOpacity>
     </Animated.View>
@@ -164,5 +166,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
     marginTop: 2,
     opacity: 0.8,
+  },
+  cardWrapper: {
+    borderRadius: 12,
+    overflow: 'hidden',
   },
 });

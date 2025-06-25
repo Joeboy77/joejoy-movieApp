@@ -318,25 +318,27 @@ export default function HomeScreen() {
     >
       <TouchableOpacity onPress={() => navigateToDetails(item.imdbID)}>
         <Surface style={[styles.cardSurface, { backgroundColor: theme.colors.surface }]}>
-          <Card style={styles.card} mode="elevated">
-            <Card.Cover
-              source={{
-                uri: item.Poster !== 'N/A'
-                  ? item.Poster
-                  : 'https://via.placeholder.com/300x450?text=No+Poster',
-              }}
-              style={styles.cardImage}
-            />
-            <LinearGradient
-              colors={['transparent', 'rgba(0,0,0,0.9)']}
-              style={styles.cardGradient}
-            >
-              <Text style={styles.cardTitle} numberOfLines={1}>
-                {item.Title}
-              </Text>
-              <Text style={styles.cardYear}>{item.Year}</Text>
-            </LinearGradient>
-          </Card>
+          <View style={styles.cardWrapper}>
+            <Card style={styles.card} mode="elevated">
+              <Card.Cover
+                source={{
+                  uri: item.Poster !== 'N/A'
+                    ? item.Poster
+                    : 'https://via.placeholder.com/300x450?text=No+Poster',
+                }}
+                style={styles.cardImage}
+              />
+              <LinearGradient
+                colors={['transparent', 'rgba(0,0,0,0.9)']}
+                style={styles.cardGradient}
+              >
+                <Text style={styles.cardTitle} numberOfLines={1}>
+                  {item.Title}
+                </Text>
+                <Text style={styles.cardYear}>{item.Year}</Text>
+              </LinearGradient>
+            </Card>
+          </View>
         </Surface>
       </TouchableOpacity>
     </Animated.View>
@@ -647,6 +649,9 @@ const styles = StyleSheet.create({
    },
    shadowOpacity: 0.15,
    shadowRadius: 4,
+ },
+ cardWrapper: {
+   overflow: 'hidden',
  },
  card: {
    width: ITEM_WIDTH,

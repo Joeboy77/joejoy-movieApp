@@ -60,6 +60,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (visible) {
       // Get all streaming sources
       const streamingSources = getStreamingSources(tmdbId, imdbId);
+      console.log('Available streaming sources:', streamingSources);
       setSources(streamingSources);
       
       setLoading(true);
@@ -105,9 +106,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   };
   
   const hideControls = () => {
-    fadeAnim.value = withTiming(0, { duration: 200 }, () => {
-      runOnJS(setShowControls)(false);
-    });
+    fadeAnim.value = withTiming(0, { duration: 200 });
+    setShowControls(false);
   };
   
   const animatedControlsStyle = useAnimatedStyle(() => {
@@ -201,7 +201,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     
     Alert.alert(
       'Select Server',
-      'Choose a different streaming server',
+      'Choose a different streaming server:',
       [
         ...serverOptions,
         {
@@ -226,19 +226,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   
   const handleHttpError = (syntheticEvent: any) => {
     const { nativeEvent } = syntheticEvent;
-    console.log('HTTP Error:', nativeEvent.statusCode, nativeEvent.url);
-    
-    if (nativeEvent.statusCode === 404) {
-      handleWebViewError(syntheticEvent);
-    }
+    console.error('HTTP Error:', nativeEvent);
+    handleWebViewError(syntheticEvent);
   };
-  
+
   return (
-    <Modal visible={visible} animationType="none" transparent>
+    <Modal
+      visible={visible}
+      animationType="fade"
+      presentationStyle="fullScreen"
+      statusBarTranslucent={true}
+      onRequestClose={onClose}
+    >
+      <StatusBar hidden={true} />
       <View style={styles.container}>
-        <StatusBar style="light" hidden />
-        
-        {/* Video Container */}
         <TouchableWithoutFeedback onPress={toggleControls}>
           <View style={styles.videoContainer}>
             {currentStreamingUrl && (
@@ -247,6 +248,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 source={{ uri: currentStreamingUrl }}
                 style={styles.webView}
                 javaScriptEnabled={true}
+                domStorageEnabled={true}
                 allowsFullscreenVideo={true}
                 onLoad={handleWebViewLoad}
                 onLoadStart={handleLoadStart}
@@ -264,6 +266,27 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   // Allow all requests
                   return true;
                 }}
+                onMessage={(event) => {
+                  console.log('WebView message:', event.nativeEvent.data);
+                }}
+                injectedJavaScript={`
+                  // Inject JavaScript to handle video player
+                  (function() {
+                    // Try to find and click play button if it exists
+                    setTimeout(function() {
+                      const playButtons = document.querySelectorAll('button, .play, .play-button, [class*="play"]');
+                      playButtons.forEach(function(btn) {
+                        if (btn.textContent.toLowerCase().includes('play') || 
+                            btn.innerHTML.toLowerCase().includes('play')) {
+                          btn.click();
+                        }
+                      });
+                    }, 2000);
+                    
+                    // Send message when page is ready
+                    window.ReactNativeWebView.postMessage('Page loaded');
+                  })();
+                `}
               />
             )}
           </View>

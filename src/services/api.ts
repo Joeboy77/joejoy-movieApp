@@ -341,14 +341,21 @@ export const getStreamingUrl = (tmdbId: string): string => {
 
 export const getStreamingSources = (tmdbId: string, imdbId?: string) => {
   const sources = [
+    // Primary sources - most reliable
     `https://vidsrc.icu/embed/movie/${tmdbId}`,
-    imdbId ? `https://vidsrc.icu/embed/movie/${imdbId}` : null,
-
     `https://vidsrc.to/embed/movie/${tmdbId}`,
+    
+    // Alternative sources
     `https://www.2embed.cc/embed/${tmdbId}`,
     `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1`,
+    
+    // Backup sources
     `https://embedplus.net/movie/${tmdbId}`,
     `https://streamwish.com/e/${tmdbId}`,
+    
+    // Additional sources
+    `https://vidsrc.xyz/embed/movie/${tmdbId}`,
+    `https://vidsrc.me/embed/movie/${tmdbId}`,
   ].filter(Boolean) as string[];
   
   return sources;
